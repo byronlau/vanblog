@@ -48,7 +48,7 @@ const LinkPage = (props: LinkPageProps) => {
     <Layout
       option={props.layoutProps}
       title="友情链接"
-      sideBar={<AuthorCard option={props.authorCardProps} />}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <div className="bg-white dark:text-dark card-shadow dark:bg-dark dark:card-shadow-dark py-4 px-8 md:py-6 md:px-8">
         <div>

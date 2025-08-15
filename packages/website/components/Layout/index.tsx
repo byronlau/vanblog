@@ -16,7 +16,7 @@ import LayoutBody from "../LayoutBody";
 export default function (props: {
   option: LayoutProps;
   title: string;
-  sideBar: any;
+  sideBar?: any;
   children: any;
 }) {
   // console.log("css", props.option.customCss);
@@ -49,7 +49,7 @@ export default function (props: {
       <Head>
         <title>{props.title}</title>
         <link rel="icon" href={props.option.favicon}></link>
-        <meta name="description" content={props.option.description}></meta>
+        <meta name="description" content={props.option.description}/>
         <meta name="robots" content="index, follow"></meta>
       </Head>
       <BackToTopBtn></BackToTopBtn>

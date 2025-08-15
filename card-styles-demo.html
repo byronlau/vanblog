@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡片风格展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            padding: 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .card-tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* 1. 经典阴影卡片 */
+        .classic-shadow {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .classic-shadow:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* 2. 扁平化卡片 */
+        .flat-card {
+            background: white;
+            box-shadow: none;
+            border: 1px solid #e5e7eb;
+        }
+
+        .flat-card:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        /* 3. 悬浮卡片 */
+        .floating-card {
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .floating-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        /* 4. 边框卡片 */
+        .border-card {
+            background: white;
+            border: 2px solid #3b82f6;
+            box-shadow: none;
+        }
+
+        .border-card:hover {
+            border-color: #1d4ed8;
+            background: #eff6ff;
+        }
+
+        /* 5. 渐变卡片 */
+        .gradient-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .gradient-card h3,
+        .gradient-card p {
+            color: white;
+        }
+
+        .gradient-card .card-tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .gradient-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        /* 6. 玻璃态卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* 7. 新拟态卡片 */
+        .neumorphism-card {
+            background: #e0e5ec;
+            box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
+            border: none;
+        }
+
+        .neumorphism-card:hover {
+            box-shadow: inset 9px 9px 16px #a3b1c6, inset -9px -9px 16px #ffffff;
+        }
+
+        /* 8. 极简卡片 */
+        .minimalist-card {
+            background: white;
+            box-shadow: none;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .minimalist-card:hover {
+            border-left-color: #1d4ed8;
+            background: #f9fafb;
+        }
+
+        /* 9. 深色卡片 */
+        .dark-card {
+            background: #1f2937;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-card h3,
+        .dark-card p {
+            color: #e5e7eb;
+        }
+
+        .dark-card .card-tag {
+            background: #374151;
+            color: #60a5fa;
+        }
+
+        .dark-card:hover {
+            background: #374151;
+            transform: translateY(-2px);
+        }
+
+        /* 10. 分层卡片 */
+        .layered-card {
+            background: white;
+            position: relative;
+        }
+
+        .layered-card::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: -8px;
+            bottom: -8px;
+            background: #f3f4f6;
+            border-radius: 12px;
+            z-index: -1;
+        }
+
+        .layered-card::after {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: -16px;
+            bottom: -16px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            z-index: -2;
+        }
+
+        .layered-card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* 11. 交互式卡片 */
+        .interactive-card {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .interactive-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .interactive-card:hover::before {
+            left: 100%;
+        }
+
+        .interactive-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 12. 图片卡片 */
+        .image-card {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .image-card .card-image {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .image-card .card-content {
+            padding: 24px;
+        }
+
+        .image-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎨 卡片风格展示</h1>
+
+        <div class="cards-grid">
+            <!-- 经典阴影卡片 -->
+            <div class="card classic-shadow">
+                <h3>经典阴影卡片</h3>
+                <p>使用柔和的阴影效果，营造层次感。这是最常见和实用的卡片风格，适合大多数场景。</p>
+                <span class="card-tag">Classic</span>
+            </div>
+
+            <!-- 扁平化卡片 -->
+            <div class="card flat-card">
+                <h3>扁平化卡片</h3>
+                <p>简约的设计风格，无阴影或极浅阴影，依靠边框和背景色来区分层次。</p>
+                <span class="card-tag">Flat</span>
+            </div>
+
+            <!-- 悬浮卡片 -->
+            <div class="card floating-card">
+                <h3>悬浮卡片</h3>
+                <p>较深的阴影营造强烈的悬浮感，鼠标悬停时效果更加明显。</p>
+                <span class="card-tag">Floating</span>
+            </div>
+
+            <!-- 边框卡片 -->
+            <div class="card border-card">
+                <h3>边框卡片</h3>
+                <p>使用彩色边框替代阴影，简洁明了，适合需要突出重点的场景。</p>
+                <span class="card-tag">Border</span>
+            </div>
+
+            <!-- 渐变卡片 -->
+            <div class="card gradient-card">
+                <h3>渐变卡片</h3>
+                <p>使用渐变背景色，现代时尚，能够吸引用户注意力。</p>
+                <span class="card-tag">Gradient</span>
+            </div>
+
+            <!-- 玻璃态卡片 -->
+            <div class="card glass-card">
+                <h3>玻璃态卡片</h3>
+                <p>半透明背景配合模糊效果，营造现代科技感的玻璃质感。</p>
+                <span class="card-tag">Glass</span>
+            </div>
+
+            <!-- 新拟态卡片 -->
+            <div class="card neumorphism-card">
+                <h3>新拟态卡片</h3>
+                <p>使用内外阴影营造"凸起"或"凹陷"的立体效果，具有独特的触感。</p>
+                <span class="card-tag">Neumorphism</span>
+            </div>
+
+            <!-- 极简卡片 -->
+            <div class="card minimalist-card">
+                <h3>极简卡片</h3>
+                <p>极少的装饰元素，专注于内容本身，通常只有微妙的分隔线。</p>
+                <span class="card-tag">Minimal</span>
+            </div>
+
+            <!-- 深色卡片 -->
+            <div class="card dark-card">
+                <h3>深色卡片</h3>
+                <p>深色背景配浅色文字，适合深色主题或需要营造神秘感的场景。</p>
+                <span class="card-tag">Dark</span>
+            </div>
+
+            <!-- 分层卡片 -->
+            <div class="card layered-card">
+                <h3>分层卡片</h3>
+                <p>多层叠加效果，创造丰富的视觉层次和深度感。</p>
+                <span class="card-tag">Layered</span>
+            </div>
+
+            <!-- 交互式卡片 -->
+            <div class="card interactive-card">
+                <h3>交互式卡片</h3>
+                <p>丰富的悬停效果和动画过渡，提供更好的用户交互体验。</p>
+                <span class="card-tag">Interactive</span>
+            </div>
+
+            <!-- 图片卡片 -->
+            <div class="card image-card">
+                <div class="card-image">
+                    📸 图片区域
+                </div>
+                <div class="card-content">
+                    <h3>图片卡片</h3>
+                    <p>顶部图片配合内容区域，适合展示视觉内容和文字信息。</p>
+                    <span class="card-tag">Image</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加一些交互效果
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function () {
+                const cardType = this.querySelector('h3').textContent;
+                console.log(`点击了: ${cardType}`);
+            });
+        });
+    </script>
+</body>
+
+</html>

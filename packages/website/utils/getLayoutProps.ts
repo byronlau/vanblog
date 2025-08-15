@@ -17,12 +17,14 @@ export interface LayoutProps {
   favicon: string;
   siteName: string;
   siteDesc: string;
+  baseUrl: string
   baiduAnalysisID: string;
   gaAnalysisID: string;
   logoDark: string;
   version: string;
   menus: MenuItem[];
   showSubMenu: "true" | "false";
+  showAuthorSidebar: "true" | "false";
   showAdminButton: "true" | "false";
   showFriends: "true" | "false";
   headerLeftContent: "siteLogo" | "siteName";

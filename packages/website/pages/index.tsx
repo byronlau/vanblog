@@ -21,7 +21,7 @@ const Home = (props: IndexPageProps) => {
     <Layout
       option={props.layoutProps}
       title={props.layoutProps.siteName}
-      sideBar={<AuthorCard option={props.authorCardProps}></AuthorCard>}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <Head>
         <meta

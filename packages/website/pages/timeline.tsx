@@ -16,7 +16,7 @@ const TimeLine = (props: TimeLinePageProps) => {
     <Layout
       title={"时间线"}
       option={props.layoutProps}
-      sideBar={<AuthorCard option={props.authorCardProps} />}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <div className="bg-white card-shadow dark:bg-dark dark:card-shadow-dark py-4 px-8 md:py-6 md:px-8">
         <div>

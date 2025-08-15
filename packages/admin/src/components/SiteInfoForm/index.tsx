@@ -216,7 +216,16 @@ export default function (props: {
             }}
             tooltip={'默认隐藏，开启后将在主导航栏下方显示分类子导航栏（其实就是双层导航栏）。'}
           />
-
+          <ProFormSelect
+            name={'showAuthorSidebar'}
+            label="显示作者侧边栏"
+            placeholder={'显示'}
+            valueEnum={{
+              true: '显示',
+              false: '隐藏',
+            }}
+            tooltip={'默认显示，根据个人喜好进行展示。'}
+          />
           <ProFormDigit
             name={'subMenuOffset'}
             label="分类导航栏左侧偏移（px）"

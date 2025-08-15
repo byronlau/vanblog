@@ -50,7 +50,7 @@ const AboutPage = (props: AboutPageProps) => {
     <Layout
       title="关于我"
       option={props.layoutProps}
-      sideBar={<AuthorCard option={props.authorCardProps} />}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <PostCard
         setContent={() => {}}

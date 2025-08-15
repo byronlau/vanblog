@@ -35,7 +35,8 @@ export async function getNetIp(req: any) {
     ip = '';
   }
   try {
-    const { data } = await axios.get(`https://cip.cc/${ip}`);
+    // const { data } = await axios.get(`https://cip.cc/${ip}`);
+    const { data } = await axios.get(`https://cip.cc/127.0.0.1`);
     // const ipApi = got.got
     //   .get(`https://whois.pconline.com.cn/ipJson.jsp?ip=${ip}&json=true`)
     //   .buffer();
