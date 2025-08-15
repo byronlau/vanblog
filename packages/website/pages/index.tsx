@@ -53,6 +53,7 @@ const Home = (props: IndexPageProps) => {
             type={"overview"}
             enableComment={props.layoutProps.enableComment}
             copyrightAggreement={props.layoutProps.copyrightAggreement}
+            tags={article.tags}
           ></PostCard>
         ))}
       </div>

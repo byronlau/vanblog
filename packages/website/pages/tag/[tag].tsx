@@ -23,7 +23,7 @@ const TagPages = (props: TagPagesProps) => {
     <Layout
       option={props.layoutProps}
       title={props.currTag}
-      sideBar={<AuthorCard option={props.authorCardProps}></AuthorCard>}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <div className="bg-white card-shadow dark:bg-dark dark:card-shadow-dark py-4 px-8 md:py-6 md:px-8">
         <div>

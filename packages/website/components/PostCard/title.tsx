@@ -22,16 +22,24 @@ export function Title(props: {
   }, [props]);
   return (
     <div className="flex justify-center post-card-title ">
-      {props.type != "about" ? (
+      {props.type === "article" ? (
         <Link href={`/post/${props.id}`} target={getTarget(newTab)} style={{width:"90%"}} title={props.title}>
           <div
             className={`text-lg block font-medium overflow-hidden text-ellipsis whitespace-nowrap px-5  text-center mb-2 mt-2 dark:text-dark text-gray-700 ${
               showEditButton ? "ml-8" : ""
-            } md:text-${props.type == "overview" ? "xl" : "2xl"} ua ua-link`}
+            } md:text-2xl ua ua-link`}
           >
             {props.title}
           </div>
         </Link>
+      ) : props.type === "overview" ? (
+        <div
+          className={`text-lg block font-medium overflow-hidden text-ellipsis whitespace-nowrap px-5  text-center mb-2 mt-2 dark:text-dark text-gray-700 ${
+            showEditButton ? "ml-8" : ""
+          } md:text-xl ua ua-link`}
+        >
+          {props.title}
+        </div>
       ) : (
         <div
           className={`text-lg block font-medium mb-2 mt-2 dark:text-dark text-gray-700 md:text-2xl ua ua-link  select-none ${

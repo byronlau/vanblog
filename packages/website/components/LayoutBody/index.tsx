@@ -1,6 +1,6 @@
 export default function (props: {
   children: any;
-  sideBar: any;
+  sideBar?: any;
 }) {
   return (
     <>
