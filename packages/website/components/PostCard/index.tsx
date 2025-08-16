@@ -467,7 +467,7 @@ export default function PostCard(props: {
               </div>
 
               {/* 文章内容预览 */}
-              <div className="text-sm text-gray-600 dark:text-gray-300">
+              <div>
                 <Markdown content={calContent}></Markdown>
               </div>
             </div>
@@ -639,7 +639,7 @@ export default function PostCard(props: {
               </div>
 
               {/* 文章完整内容 */}
-              <div className="text-sm text-gray-600 dark:text-gray-300">
+              <div>
                 {props.type == "article" && (
                   <AlertCard
                     showExpirationReminder={props.showExpirationReminder}

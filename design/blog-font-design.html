@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客字体系统演示</title>
+    <style>
+        :root {
+            /* 基础字体栈 */
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-serif: "Iowan Old Style", "Palatino Linotype", "URW Palladio L", P052, Georgia, serif;
+            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+            /* 基础单位 - 使用rem单位便于整体缩放 */
+            --base-font-size: 18px;
+            --base-line-height: 1.6;
+
+            /* 标题大小系统 */
+            --text-xs: 0.75rem;
+            /* 12px */
+            --text-sm: 0.875rem;
+            /* 14px */
+            --text-base: 1rem;
+            /* 16px */
+            --text-lg: 1.125rem;
+            /* 18px */
+            --text-xl: 1.25rem;
+            /* 20px */
+            --text-2xl: 1.5rem;
+            /* 24px */
+            --text-3xl: 1.875rem;
+            /* 30px */
+            --text-4xl: 2.25rem;
+            /* 36px */
+            --text-5xl: 3rem;
+            /* 48px */
+
+            /* 行高系统 */
+            --leading-tight: 1.25;
+            --leading-snug: 1.375;
+            --leading-normal: 1.5;
+            --leading-relaxed: 1.625;
+            --leading-loose: 2;
+
+            /* 间距系统 */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-20: 5rem;
+        }
+
+        html {
+            font-size: var(--base-font-size);
+            line-height: var(--base-line-height);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: #333;
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--space-8) var(--space-6);
+        }
+
+        /* 文章主标题 */
+        .article-title {
+            font-family: var(--font-serif);
+            font-size: var(--text-4xl);
+            line-height: var(--leading-tight);
+            font-weight: 700;
+            margin-bottom: var(--space-6);
+            color: #1a202c;
+            letter-spacing: -0.025em;
+        }
+
+        /* 文章副标题 */
+        .article-subtitle {
+            font-family: var(--font-sans);
+            font-size: var(--text-xl);
+            line-height: var(--leading-snug);
+            font-weight: 400;
+            margin-bottom: var(--space-8);
+            color: #4a5568;
+        }
+
+        /* 文章正文 */
+        .article-content {
+            font-family: var(--font-serif);
+            font-size: var(--text-lg);
+            line-height: var(--leading-relaxed);
+            color: #2d3748;
+            max-width: 65ch;
+            /* 限制每行字符数，提高阅读体验 */
+            margin: 0 auto;
+        }
+
+        /* 段落间距 */
+        .article-content p {
+            margin-bottom: var(--space-4);
+        }
+
+        /* 首段特殊样式 */
+        .article-content p:first-of-type {
+            font-size: var(--text-xl);
+            line-height: var(--leading-relaxed);
+            color: #2d3748;
+        }
+
+        /* 一级标题 */
+        .article-content h1 {
+            font-family: var(--font-serif);
+            font-size: var(--text-3xl);
+            line-height: var(--leading-snug);
+            font-weight: 700;
+            margin-top: var(--space-10);
+            margin-bottom: var(--space-4);
+            color: #1a202c;
+        }
+
+        /* 二级标题 */
+        .article-content h2 {
+            font-family: var(--font-serif);
+            font-size: var(--text-2xl);
+            line-height: var(--leading-snug);
+            font-weight: 600;
+            margin-top: var(--space-8);
+            margin-bottom: var(--space-3);
+            color: #2d3748;
+            padding-bottom: var(--space-2);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* 三级标题 */
+        .article-content h3 {
+            font-family: var(--font-serif);
+            font-size: var(--text-xl);
+            line-height: var(--leading-snug);
+            font-weight: 600;
+            margin-top: var(--space-6);
+            margin-bottom: var(--space-2);
+            color: #2d3748;
+        }
+
+        /* 四级标题 */
+        .article-content h4 {
+            font-family: var(--font-sans);
+            font-size: var(--text-lg);
+            line-height: var(--leading-snug);
+            font-weight: 600;
+            margin-top: var(--space-5);
+            margin-bottom: var(--space-2);
+            color: #4a5568;
+        }
+
+        /* 五级标题 */
+        .article-content h5 {
+            font-family: var(--font-sans);
+            font-size: var(--text-base);
+            line-height: var(--leading-normal);
+            font-weight: 600;
+            margin-top: var(--space-4);
+            margin-bottom: var(--space-1);
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* 六级标题 */
+        .article-content h6 {
+            font-family: var(--font-sans);
+            font-size: var(--text-sm);
+            line-height: var(--leading-normal);
+            font-weight: 600;
+            margin-top: var(--space-3);
+            margin-bottom: var(--space-1);
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* 链接 */
+        .article-content a {
+            color: #3182ce;
+            text-decoration: underline;
+            text-decoration-color: rgba(49, 130, 206, 0.3);
+            text-underline-offset: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .article-content a:hover {
+            color: #2c5282;
+            text-decoration-color: rgba(49, 130, 206, 0.8);
+        }
+
+        /* 强调文本 */
+        .article-content strong {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        /* 斜体文本 */
+        .article-content em {
+            font-style: italic;
+        }
+
+        /* 引用 */
+        .article-content blockquote {
+            font-family: var(--font-serif);
+            font-size: var(--text-xl);
+            line-height: var(--leading-relaxed);
+            font-style: italic;
+            color: #4a5568;
+            margin: var(--space-6) 0;
+            padding-left: var(--space-6);
+            border-left: 4px solid #cbd5e0;
+        }
+
+        /* 代码 */
+        .article-content code {
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            background-color: #edf2f7;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            color: #2d3748;
+        }
+
+        /* 预格式化文本 */
+        .article-content pre {
+            font-family: var(--font-mono);
+            font-size: var(--text-base);
+            line-height: var(--leading-normal);
+            background-color: #1a202c;
+            color: #e2e8f0;
+            padding: var(--space-4);
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: var(--space-6) 0;
+        }
+
+        /* 列表 */
+        .article-content ul,
+        .article-content ol {
+            margin-bottom: var(--space-4);
+            padding-left: var(--space-6);
+        }
+
+        .article-content li {
+            margin-bottom: var(--space-2);
+        }
+
+        /* 水平分割线 */
+        .article-content hr {
+            border: 0;
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: var(--space-8) 0;
+        }
+
+        /* 深色模式样式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: #e2e8f0;
+                background-color: #1a202c;
+            }
+
+            .article-title {
+                color: #f7fafc;
+            }
+
+            .article-subtitle {
+                color: #cbd5e0;
+            }
+
+            .article-content {
+                color: #e2e8f0;
+            }
+
+            .article-content h1,
+            .article-content h2,
+            .article-content h3 {
+                color: #f7fafc;
+            }
+
+            .article-content h4,
+            .article-content h5,
+            .article-content h6 {
+                color: #cbd5e0;
+            }
+
+            .article-content a {
+                color: #63b3ed;
+                text-decoration-color: rgba(99, 179, 237, 0.3);
+            }
+
+            .article-content a:hover {
+                color: #90cdf4;
+                text-decoration-color: rgba(99, 179, 237, 0.8);
+            }
+
+            .article-content strong {
+                color: #f7fafc;
+            }
+
+            .article-content blockquote {
+                color: #cbd5e0;
+                border-left-color: #4a5568;
+            }
+
+            .article-content code {
+                background-color: #2d3748;
+                color: #90cdf4;
+            }
+
+            .article-content hr {
+                background-color: #2d3748;
+            }
+        }
+
+        /* 平板设备 */
+        @media (max-width: 768px) {
+            :root {
+                --base-font-size: 16px;
+            }
+
+            .article-title {
+                font-size: var(--text-3xl);
+            }
+
+            .article-content {
+                font-size: var(--text-base);
+            }
+
+            .article-content h1 {
+                font-size: var(--text-2xl);
+            }
+
+            .article-content h2 {
+                font-size: var(--text-xl);
+            }
+        }
+
+        /* 手机设备 */
+        @media (max-width: 480px) {
+            :root {
+                --base-font-size: 15px;
+            }
+
+            .article-title {
+                font-size: var(--text-2xl);
+            }
+
+            .article-content {
+                font-size: var(--text-base);
+            }
+
+            .article-content h1 {
+                font-size: var(--text-xl);
+            }
+
+            .article-content h2 {
+                font-size: var(--text-lg);
+            }
+        }
+
+        /* 深色模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .dark-mode .theme-toggle {
+            background: #2d3748;
+        }
+
+        .dark-mode {
+            color: #e2e8f0;
+            background-color: #1a202c;
+        }
+
+        .dark-mode .article-title {
+            color: #f7fafc;
+        }
+
+        .dark-mode .article-subtitle {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .article-content {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .article-content h1,
+        .dark-mode .article-content h2,
+        .dark-mode .article-content h3 {
+            color: #f7fafc;
+        }
+
+        .dark-mode .article-content h4,
+        .dark-mode .article-content h5,
+        .dark-mode .article-content h6 {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .article-content a {
+            color: #63b3ed;
+            text-decoration-color: rgba(99, 179, 237, 0.3);
+        }
+
+        .dark-mode .article-content a:hover {
+            color: #90cdf4;
+            text-decoration-color: rgba(99, 179, 237, 0.8);
+        }
+
+        .dark-mode .article-content strong {
+            color: #f7fafc;
+        }
+
+        .dark-mode .article-content blockquote {
+            color: #cbd5e0;
+            border-left-color: #4a5568;
+        }
+
+        .dark-mode .article-content code {
+            background-color: #2d3748;
+            color: #90cdf4;
+        }
+
+        .dark-mode .article-content hr {
+            background-color: #2d3748;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="theme-toggle" id="theme-toggle">🌓</button>
+
+    <div class="container">
+        <h1 class="article-title">优雅的博客排版系统</h1>
+        <p class="article-subtitle">一套精心设计的字体系统，提供卓越的阅读体验和视觉美感</p>
+
+        <div class="article-content">
+            <p>这是一个演示页面，展示了一套精心设计的博客字体系统。这套系统考虑了阅读舒适度、视觉层次和跨平台兼容性，旨在为读者提供最佳的阅读体验。</p>
+
+            <h1>一级标题示例</h1>
+            <p>这是一级标题下的段落。一级标题通常用于文章的主要部分，它们使用较大的字体和粗体字重，以创建清晰的视觉层次。</p>
+
+            <h2>二级标题示例</h2>
+            <p>二级标题用于划分文章的主要章节。它们比一级标题小，但仍然足够突出，可以帮助读者快速浏览文章结构。</p>
+
+            <h3>三级标题示例</h3>
+            <p>三级标题用于进一步细分内容。它们在视觉上比二级标题更小，但仍然能够清晰地标记内容的子部分。</p>
+
+            <h4>四级标题示例</h4>
+            <p>四级标题通常用于更细粒度的内容划分。它们使用无衬线字体，与正文形成对比。</p>
+
+            <h5>五级标题示例</h5>
+            <p>五级标题使用大写字母和增加的字间距，使其在视觉上与众不同，尽管尺寸较小。</p>
+
+            <h6>六级标题示例</h6>
+            <p>六级标题是标题系统中的最小级别，仍然保持足够的视觉重量以被识别。</p>
+
+            <h2>文本元素展示</h2>
+            <p>这段文字展示了<strong>强调文本</strong>和<em>斜体文本</em>的效果。这些文本元素可以帮助作者突出重要信息或表达特定语气。</p>
+
+            <p>这段文字包含一个<a href="#">链接示例</a>。链接使用下划线标记，并在悬停时改变颜色，提供良好的交互反馈。</p>
+
+            <blockquote>
+                这是一个引用块的示例。引用块使用斜体和左侧边框，使其在视觉上与正文区分开来。引用通常用于突出显示他人的观点或重要引述。
+            </blockquote>
+
+            <p>行内代码示例：<code>console.log('Hello, World!');</code>。行内代码使用等宽字体和背景色，使其在段落中清晰可见。</p>
+
+            <pre>function greet() {
+    console.log('Hello, World!');
+}
+
+greet();</pre>
+
+            <h2>列表展示</h2>
+            <p>以下是一个无序列表的示例：</p>
+            <ul>
+                <li>第一项列表内容</li>
+                <li>第二项列表内容</li>
+                <li>第三项列表内容
+                    <ul>
+                        <li>嵌套列表项一</li>
+                        <li>嵌套列表项二</li>
+                    </ul>
+                </li>
+                <li>第四项列表内容</li>
+            </ul>
+
+            <p>以下是一个有序列表的示例：</p>
+            <ol>
+                <li>第一步：准备工作</li>
+                <li>第二步：实施计划</li>
+                <li>第三步：评估结果
+                    <ol>
+                        <li>收集数据</li>
+                        <li>分析数据</li>
+                        <li>得出结论</li>
+                    </ol>
+                </li>
+                <li>第四步：持续改进</li>
+            </ol>
+
+            <hr>
+
+            <h2>阅读体验设计</h2>
+            <p>这套字体系统在设计时特别注重阅读体验。正文使用衬线字体，因为研究表明衬线字体在长时间阅读时可以减少眼部疲劳。行高设置为1.625，提供了足够的垂直空间，使文本更易于阅读。</p>
+
+            <p>每行的最大字符数限制为65个字符，这是基于阅读研究的最佳实践。过长的行会使读者在换行时失去位置，而过短的行则会频繁打断阅读节奏。</p>
+
+            <p>字体大小系统基于比例缩放，确保不同级别的标题之间有明确的视觉层次。这种层次结构帮助读者理解内容的组织方式，并能够快速浏览文章。</p>
+
+            <h2>响应式设计</h2>
+            <p>这套字体系统还考虑了不同设备的显示需求。在平板和手机设备上，基础字体大小会适当缩小，以确保内容在小屏幕上仍然能够良好显示。同时，标题大小也会相应调整，保持视觉层次的一致性。</p>
+
+            <p>此外，系统还支持深色模式，可以根据用户的系统设置自动切换。深色模式使用低对比度的颜色组合，减少在低光环境下的眼部疲劳。</p>
+
+            <p>总之，这套字体系统通过精心设计的字体选择、大小、行高和间距，为博客内容提供了卓越的阅读体验和视觉美感。无论是在桌面还是移动设备上，无论是在明亮还是昏暗的环境中，读者都能享受到舒适、愉悦的阅读体验。</p>
+        </div>
+    </div>
+
+    <script>
+        // 深色模式切换
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // 检查本地存储中的主题设置
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            body.classList.add('dark-mode');
+        }
+
+        themeToggle.addEventListener('click', function () {
+            body.classList.toggle('dark-mode');
+
+            // 保存主题设置到本地存储
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+
+</html>

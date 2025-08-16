@@ -25,24 +25,24 @@ export function Title(props: {
       {props.type === "article" ? (
         <Link href={`/post/${props.id}`} target={getTarget(newTab)} style={{width:"90%"}} title={props.title}>
           <div
-            className={`text-lg block font-medium overflow-hidden text-ellipsis whitespace-nowrap px-5  text-center mb-2 mt-2 dark:text-dark text-gray-700 ${
+            className={`article-title overflow-hidden text-ellipsis whitespace-nowrap px-5 text-center mb-2 mt-2 ${
               showEditButton ? "ml-8" : ""
-            } md:text-2xl ua ua-link`}
+            } ua ua-link`}
           >
             {props.title}
           </div>
         </Link>
       ) : props.type === "overview" ? (
         <div
-          className={`text-lg block font-medium overflow-hidden text-ellipsis whitespace-nowrap px-5  text-center mb-2 mt-2 dark:text-dark text-gray-700 ${
+          className={`article-title text-xl overflow-hidden text-ellipsis whitespace-nowrap px-5 text-center mb-2 mt-2 ${
             showEditButton ? "ml-8" : ""
-          } md:text-xl ua ua-link`}
+          } ua ua-link`}
         >
           {props.title}
         </div>
       ) : (
         <div
-          className={`text-lg block font-medium mb-2 mt-2 dark:text-dark text-gray-700 md:text-2xl ua ua-link  select-none ${
+          className={`article-title mb-2 mt-2 ua ua-link select-none ${
             showEditButton ? "ml-12 mr-4" : ""
           }`}
         >
