@@ -34,7 +34,7 @@ export function Title(props: {
         </Link>
       ) : props.type === "overview" ? (
         <div
-          className={`article-title text-xl overflow-hidden text-ellipsis whitespace-nowrap px-5 text-center mb-2 mt-2 ${
+          className={`article-title text-3xl overflow-hidden text-ellipsis whitespace-nowrap px-5 text-center mb-2 mt-2 ${
             showEditButton ? "ml-8" : ""
           } ua ua-link`}
         >

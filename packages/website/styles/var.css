@@ -10,7 +10,7 @@
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
   /* 基础单位 - 使用rem单位便于整体缩放 */
-  --base-font-size: 18px;
+  --base-font-size: 16px;
   --base-line-height: 1.6;
 
   /* 标题大小系统 */

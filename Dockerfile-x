@@ -1,0 +1,131 @@
+# ===================== 基础构建镜像 =====================
+FROM node:20.10.0-slim AS base_builder
+WORKDIR /app
+USER root
+
+# 使用阿里云 Debian 源
+RUN echo "deb http://mirrors.aliyun.com/debian bookworm main contrib non-free" > /etc/apt/sources.list \
+ && echo "deb http://mirrors.aliyun.com/debian bookworm-updates main contrib non-free" >> /etc/apt/sources.list \
+ && echo "deb http://mirrors.aliyun.com/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list
+
+# 安装构建依赖，跳过 Release 文件过期检查
+RUN apt-get update -o Acquire::Check-Valid-Until=false \
+ && apt-get install -y --no-install-recommends \
+    python3 make g++ caddy libnss3-tools webp libvips-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# 设置时区
+ENV TZ=Asia/Shanghai
+
+# 配置 pnpm 国内镜像并激活
+RUN corepack enable \
+  && corepack prepare pnpm@latest --activate \
+  && pnpm config set registry https://registry.npmmirror.com -g \
+  && pnpm config set network-timeout 600000 -g \
+  && pnpm config set fetch-retries 5 -g \
+  && pnpm config set fetch-timeout 300000 -g
+
+# 复制工作区依赖清单，利用缓存
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+RUN pnpm install --frozen-lockfile
+
+# ===================== Admin 构建 =====================
+FROM base_builder AS admin_builder
+WORKDIR /app/packages/admin
+COPY ./packages/admin/ ./
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
+
+# ===================== Server 构建 =====================
+FROM base_builder AS server_builder
+WORKDIR /app/packages/server
+COPY ./packages/server/ ./
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
+
+# ===================== Website 构建 =====================
+FROM base_builder AS website_builder
+WORKDIR /app/packages/website
+COPY ./packages/website ./
+ARG VAN_BLOG_BUILD_SERVER
+ARG VAN_BLOG_VERSIONS
+ENV VAN_BLOG_SERVER_URL=${VAN_BLOG_BUILD_SERVER}
+ENV VAN_BLOG_VERSION=${VAN_BLOG_VERSIONS}
+ENV VAN_BLOG_ALLOW_DOMAINS="pic.mereith.com"
+RUN pnpm install --frozen-lockfile
+RUN pnpm build:website
+
+# ===================== 运行镜像 =====================
+FROM node:20.10.0-slim AS runner
+WORKDIR /app
+
+# 阿里云源
+RUN echo "deb http://mirrors.aliyun.com/debian bookworm main contrib non-free" > /etc/apt/sources.list \
+ && echo "deb http://mirrors.aliyun.com/debian bookworm-updates main contrib non-free" >> /etc/apt/sources.list \
+ && echo "deb http://mirrors.aliyun.com/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list
+
+# 安装运行依赖
+RUN apt-get update -o Acquire::Check-Valid-Until=false \
+ && apt-get install -y --no-install-recommends \
+    caddy libnss3-tools webp libvips-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# 设置时区
+ENV TZ=Asia/Shanghai
+
+# 激活 pnpm，保证后续 RUN 可以使用
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# ===================== 拷贝各模块 =====================
+# CLI
+WORKDIR /app/cli
+COPY ./packages/cli/ ./
+RUN pnpm install --prod
+
+# Waline
+WORKDIR /app/waline
+COPY ./packages/waline/ ./
+RUN pnpm install --prod
+
+# Server
+WORKDIR /app/server
+COPY --from=server_builder /app/packages/server/dist ./dist
+COPY --from=server_builder /app/packages/server/node_modules ./node_modules
+
+# Website
+WORKDIR /app/website
+COPY --from=website_builder /app/packages/website/.next/standalone ./
+COPY --from=website_builder /app/packages/website/public ./public
+COPY --from=website_builder /app/packages/website/next.config.js ./next.config.js
+COPY --from=website_builder /app/packages/website/package.json ./package.json
+COPY --from=website_builder /app/packages/website/.next/static ./.next/static
+
+# Admin
+WORKDIR /app/admin
+COPY --from=admin_builder /app/packages/admin/dist ./
+
+# 入口文件
+WORKDIR /app
+COPY ./scripts/start.js ./start.js
+COPY ./entrypoint.sh ./entrypoint.sh
+
+# ===================== 环境变量 =====================
+ENV NODE_ENV=production \
+    PORT=3001 \
+    VAN_BLOG_SERVER_URL="http://127.0.0.1:3000" \
+    VAN_BLOG_ALLOW_DOMAINS="pic.mereith.com" \
+    VAN_BLOG_DATABASE_URL="mongodb://mongo:27017/vanBlog?authSource=admin" \
+    EMAIL="vanblog@mereith.com" \
+    VAN_BLOG_WALINE_DB="waline"
+
+ARG VAN_BLOG_VERSIONS
+ENV VAN_BLOG_VERSION=${VAN_BLOG_VERSIONS}
+
+# ===================== 挂载点 =====================
+VOLUME /app/static
+VOLUME /var/log
+VOLUME /root/.config/caddy
+VOLUME /root/.local/share/caddy
+
+EXPOSE 80
+ENTRYPOINT ["sh", "entrypoint.sh"]

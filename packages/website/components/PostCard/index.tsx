@@ -143,7 +143,7 @@ export default function PostCard(props: {
 
     if (props.type === "overview") {
       if (props.private) {
-        return "该文章已加密，点击 `阅读全文` 并输入密码后方可查看。";
+        return "该文章已加密，点击 `文章详情` 并输入密码后方可查看。";
       }
       const r = processedContent.split("<!-- more -->");
       if (r.length > 1) {
@@ -217,7 +217,7 @@ export default function PostCard(props: {
   // 计算图片高度（useCallback）
   const calculateImageHeight = useCallback((img: HTMLImageElement, usedWidth?: number) => {
     if (!isMobile) {
-      return 300; // 桌面端固定300px
+      return 330; // 桌面端固定300px
     }
 
     const originalHeight = img.naturalHeight || 1;
@@ -251,7 +251,7 @@ export default function PostCard(props: {
       img.src = finalImageUrl;
     } else if (!isMobile) {
       // 桌面端固定300px
-      setImageHeight(300);
+      setImageHeight(330);
     }
   }, [finalImageUrl, isMobile, containerWidth]);
 

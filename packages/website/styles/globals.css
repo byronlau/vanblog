@@ -32,6 +32,14 @@
   ul {
     list-style: unset;
   }
+  
+  ol {
+    list-style-type: decimal;
+  }
+  
+  ul {
+    list-style-type: disc;
+  }
 
   a {
     word-wrap: break-word;
@@ -156,7 +164,7 @@
   /* 文章主标题 */
   .article-title {
     font-family: var(--font-serif);
-    font-size: var(--text-4xl);
+    font-size: var(--text-3xl);
     line-height: var(--leading-tight);
     font-weight: 700;
     margin-bottom: var(--space-6);
@@ -177,9 +185,46 @@
   /* 文章正文 */
   .article-content {
     font-family: var(--font-serif);
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: #2d3748;
+  }
+  
+  /* 文章内容中的列表样式 */
+  .article-content ol {
+    list-style-type: decimal;
+    padding-left: 2em;
+    margin-bottom: var(--space-4);
+  }
+  
+  .article-content ul {
+    list-style-type: disc;
+    padding-left: 2em;
+    margin-bottom: var(--space-4);
+  }
+  
+  .article-content ol ol {
+    list-style-type: lower-alpha;
+  }
+  
+  .article-content ol ol ol {
+    list-style-type: lower-roman;
+  }
+  
+  .article-content ul ul {
+    list-style-type: circle;
+  }
+  
+  .article-content ul ul ul {
+    list-style-type: square;
+  }
+  
+  .article-content ul ol {
+    list-style-type: lower-alpha;
+  }
+  
+  .article-content ol ul {
+    list-style-type: circle;
   }
 
   /* 段落间距 */
@@ -189,7 +234,7 @@
 
   /* 首段特殊样式 */
   .article-content p:first-of-type {
-    font-size: var(--text-xl);
+    font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: #2d3748;
   }
