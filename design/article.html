@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>从 CSS 字符串到 AST（一）——词法分析器（Lexer）的实现 - 宝硕博客</title>
+    <link rel="stylesheet" href="article-style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="globe-icon">🌐</span>
+                <span class="site-name">宝硕博客</span>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link">首页</a>
+                <a href="#" class="nav-link">日记</a>
+                <a href="#" class="nav-link">分类</a>
+                <a href="#" class="nav-link">标签</a>
+                <a href="#" class="nav-link">友链</a>
+                <a href="#" class="nav-link">关于</a>
+                <a href="#" class="nav-link">🔍</a>
+                <a href="#" class="nav-link">🌙</a>
+                <a href="#" class="nav-link">❓</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Article Header -->
+            <div class="article-header">
+                <h1 class="article-title">从 CSS 字符串到 AST（一）——词法分析器（Lexer）的实现</h1>
+                <div class="article-meta">
+                    <span class="date">2025-01-05</span>
+                    <span class="category">技术向</span>
+                    <span class="reading-time">阅读时间约 8 分钟</span>
+                </div>
+            </div>
+
+            <!-- Article Content -->
+            <article class="article-content">
+                <p>最近在学习编译原理，通过了一些资料，想要自己实现一个 CSS 的词法分析器（一）。这次分享的是如何实现，希望对大家有所帮助。本文将详细介绍 Lexer。</p>
+
+                <h2>什么是词法分析器（Lexer）？</h2>
+                <p>词法分析器（Lexical Analyzer），也称为扫描器（Scanner），是编译器的第一个阶段。它的主要任务是将输入的字符流转换为标记（Token）流。</p>
+
+                <h3>Token 的定义</h3>
+                <p>Token 是词法分析的基本单位，每个 Token 都有一个类型和一个值。在 CSS 中，常见的 Token 类型包括：</p>
+
+                <ul>
+                    <li><strong>标识符（Identifier）</strong>：如 <code>color</code>、<code>margin</code> 等</li>
+                    <li><strong>数字（Number）</strong>：如 <code>10</code>、<code>3.14</code> 等</li>
+                    <li><strong>字符串（String）</strong>：如 <code>"Arial"</code>、<code>'sans-serif'</code> 等</li>
+                    <li><strong>符号（Symbol）</strong>：如 <code>{</code>、<code>}</code>、<code>:</code>、<code>;</code> 等</li>
+                </ul>
+
+                <h2>实现思路</h2>
+                <p>我们的词法分析器需要能够：</p>
+                <ol>
+                    <li>读取输入的 CSS 字符串</li>
+                    <li>识别不同类型的 Token</li>
+                    <li>跳过空白字符和注释</li>
+                    <li>处理错误情况</li>
+                </ol>
+
+                <h3>基本结构</h3>
+                <pre><code class="language-javascript">class CSSLexer {
+    constructor(input) {
+        this.input = input;
+        this.position = 0;
+        this.currentChar = this.input[this.position];
+    }
+
+    error() {
+        throw new Error(`Invalid character: ${this.currentChar}`);
+    }
+
+    advance() {
+        this.position++;
+        if (this.position >= this.input.length) {
+            this.currentChar = null;
+        } else {
+            this.currentChar = this.input[this.position];
+        }
+    }
+
+    skipWhitespace() {
+        while (this.currentChar !== null && /\s/.test(this.currentChar)) {
+            this.advance();
+        }
+    }
+}</code></pre>
+
+                <h3>Token 类型定义</h3>
+                <pre><code class="language-javascript">const TokenType = {
+    IDENTIFIER: 'IDENTIFIER',
+    NUMBER: 'NUMBER',
+    STRING: 'STRING',
+    LBRACE: 'LBRACE',      // {
+    RBRACE: 'RBRACE',      // }
+    COLON: 'COLON',        // :
+    SEMICOLON: 'SEMICOLON', // ;
+    COMMA: 'COMMA',        // ,
+    DOT: 'DOT',            // .
+    HASH: 'HASH',          // #
+    EOF: 'EOF'
+};
+
+class Token {
+    constructor(type, value) {
+        this.type = type;
+        this.value = value;
+    }
+}</code></pre>
+
+                <h2>核心方法实现</h2>
+
+                <h3>识别标识符</h3>
+                <pre><code class="language-javascript">identifier() {
+    let result = '';
+    while (this.currentChar !== null && 
+           /[a-zA-Z0-9_-]/.test(this.currentChar)) {
+        result += this.currentChar;
+        this.advance();
+    }
+    return result;
+}</code></pre>
+
+                <h3>识别数字</h3>
+                <pre><code class="language-javascript">number() {
+    let result = '';
+    while (this.currentChar !== null && 
+           /[0-9.]/.test(this.currentChar)) {
+        result += this.currentChar;
+        this.advance();
+    }
+    return parseFloat(result);
+}</code></pre>
+
+                <h3>识别字符串</h3>
+                <pre><code class="language-javascript">string() {
+    const quote = this.currentChar;
+    this.advance(); // 跳过开始的引号
+    
+    let result = '';
+    while (this.currentChar !== null && this.currentChar !== quote) {
+        result += this.currentChar;
+        this.advance();
+    }
+    
+    if (this.currentChar === quote) {
+        this.advance(); // 跳过结束的引号
+    }
+    
+    return result;
+}</code></pre>
+
+                <h2>主要的 getNextToken 方法</h2>
+                <pre><code class="language-javascript">getNextToken() {
+    while (this.currentChar !== null) {
+        if (/\s/.test(this.currentChar)) {
+            this.skipWhitespace();
+            continue;
+        }
+
+        if (/[a-zA-Z_]/.test(this.currentChar)) {
+            return new Token(TokenType.IDENTIFIER, this.identifier());
+        }
+
+        if (/[0-9]/.test(this.currentChar)) {
+            return new Token(TokenType.NUMBER, this.number());
+        }
+
+        if (this.currentChar === '"' || this.currentChar === "'") {
+            return new Token(TokenType.STRING, this.string());
+        }
+
+        if (this.currentChar === '{') {
+            this.advance();
+            return new Token(TokenType.LBRACE, '{');
+        }
+
+        if (this.currentChar === '}') {
+            this.advance();
+            return new Token(TokenType.RBRACE, '}');
+        }
+
+        if (this.currentChar === ':') {
+            this.advance();
+            return new Token(TokenType.COLON, ':');
+        }
+
+        if (this.currentChar === ';') {
+            this.advance();
+            return new Token(TokenType.SEMICOLON, ';');
+        }
+
+        if (this.currentChar === ',') {
+            this.advance();
+            return new Token(TokenType.COMMA, ',');
+        }
+
+        if (this.currentChar === '.') {
+            this.advance();
+            return new Token(TokenType.DOT, '.');
+        }
+
+        if (this.currentChar === '#') {
+            this.advance();
+            return new Token(TokenType.HASH, '#');
+        }
+
+        this.error();
+    }
+
+    return new Token(TokenType.EOF, null);
+}</code></pre>
+
+                <h2>使用示例</h2>
+                <pre><code class="language-javascript">const cssCode = `
+.container {
+    color: red;
+    font-size: 16px;
+    margin: 10px 20px;
+}
+`;
+
+const lexer = new CSSLexer(cssCode);
+let token = lexer.getNextToken();
+
+while (token.type !== TokenType.EOF) {
+    console.log(`Token: ${token.type}, Value: ${token.value}`);
+    token = lexer.getNextToken();
+}</code></pre>
+
+                <h2>输出结果</h2>
+                <pre><code>Token: DOT, Value: .
+Token: IDENTIFIER, Value: container
+Token: LBRACE, Value: {
+Token: IDENTIFIER, Value: color
+Token: COLON, Value: :
+Token: IDENTIFIER, Value: red
+Token: SEMICOLON, Value: ;
+Token: IDENTIFIER, Value: font-size
+Token: COLON, Value: :
+Token: NUMBER, Value: 16
+Token: IDENTIFIER, Value: px
+Token: SEMICOLON, Value: ;
+Token: IDENTIFIER, Value: margin
+Token: COLON, Value: :
+Token: NUMBER, Value: 10
+Token: IDENTIFIER, Value: px
+Token: NUMBER, Value: 20
+Token: IDENTIFIER, Value: px
+Token: SEMICOLON, Value: ;
+Token: RBRACE, Value: }</code></pre>
+
+                <h2>总结</h2>
+                <p>通过这个简单的词法分析器实现，我们可以看到：</p>
+                <ul>
+                    <li>词法分析器的核心是状态机的概念</li>
+                    <li>需要正确处理各种字符类型</li>
+                    <li>错误处理很重要</li>
+                    <li>这只是编译器的第一步，后续还需要语法分析器</li>
+                </ul>
+
+                <p>在下一篇文章中，我们将介绍如何基于这个词法分析器构建语法分析器，将 Token 流转换为抽象语法树（AST）。</p>
+
+                <h2>参考资料</h2>
+                <ul>
+                    <li><a href="#">编译原理（龙书）</a></li>
+                    <li><a href="#">CSS 规范文档</a></li>
+                    <li><a href="#">词法分析器设计模式</a></li>
+                </ul>
+            </article>
+
+            <!-- Article Footer -->
+            <div class="article-footer">
+                <div class="tags">
+                    <span class="tag">CSS</span>
+                    <span class="tag">编译原理</span>
+                    <span class="tag">词法分析</span>
+                    <span class="tag">JavaScript</span>
+                </div>
+                
+                <div class="article-nav">
+                    <a href="#" class="prev-article">
+                        <span class="nav-label">上一篇</span>
+                        <span class="nav-title">向着理想的未来进发——我的 2024 年度总结</span>
+                    </a>
+                    <a href="#" class="next-article">
+                        <span class="nav-label">下一篇</span>
+                        <span class="nav-title">从 CSS 字符串到 AST（二）——语法分析器的实现</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-left">
+                <span>Copyright © 2019 - 2025 宝硕博客 · 豫ICP备19246659号-3</span>
+            </div>
+            <div class="footer-right">
+                <span>Powered by Nolebase & Halo · Designed by Baoshuo</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

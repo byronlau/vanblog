@@ -38,7 +38,17 @@ export async function getTimeLinePageProps(): Promise<TimeLinePageProps> {
   const data = await getPublicMeta();
   const layoutProps = getLayoutProps(data);
   const authorCardProps = getAuthorCardProps(data);
-  const sortedArticles = await getArticlesByTimeLine();
+  const { articles } = await getArticlesByOption({
+    page: 1,
+    pageSize: 20, // Only fetch first 20 articles for timeline
+    sortCreatedAt: "desc",
+    toListView: true,
+  });
+  const sortedArticles = washArticlesByKey(
+    articles,
+    (each) => new Date(each.createdAt).getFullYear(),
+    false
+  );
   const wordTotal = data.totalWordCount;
   return {
     layoutProps,
@@ -130,7 +140,7 @@ export async function getTagPagesProps(
     totalWordCount,
   } = await getArticlesByOption({
     page: 1,
-    pageSize: -1,
+    pageSize: 10,
     tags: currTag,
     withWordCount: true,
     toListView: true,
@@ -208,7 +218,7 @@ export async function getCategoryPagesProps(
     totalWordCount,
   } = await getArticlesByOption({
     page: 1,
-    pageSize: -1,
+    pageSize: 10,
     category: curCategory,
     withWordCount: true,
     toListView: true,
