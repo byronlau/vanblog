@@ -38,7 +38,7 @@ const sanitize = (schema) => {
   return schema
 }
 export default function ({ content }: { content: string }) {
-  return <div className="markdown-body">
+  return <div className="markdown-body article-content">
     <Viewer value={content} plugins={plugins} remarkRehype={{ allowDangerousHtml: true }} sanitize={sanitize} />
   </div>
 }

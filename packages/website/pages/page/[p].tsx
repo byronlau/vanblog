@@ -26,7 +26,7 @@ const PagePages = (props: PagePagesProps) => {
     <Layout
       option={props.layoutProps}
       title={props.layoutProps.siteName}
-      sideBar={<AuthorCard option={props.authorCardProps}></AuthorCard>}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <Head>
         <meta
@@ -59,6 +59,7 @@ const PagePages = (props: PagePagesProps) => {
             type={"overview"}
             enableComment={props.layoutProps.enableComment}
             private={article.private}
+            tags={article.tags}
           ></PostCard>
         ))}
       </div>

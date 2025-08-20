@@ -17,7 +17,7 @@ const CategoryPage = (props: CategoryPageProps) => {
     <Layout
       option={props.layoutProps}
       title="分类"
-      sideBar={<AuthorCard option={props.authorCardProps} />}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <div className="bg-white card-shadow dark:bg-dark dark:card-shadow-dark py-4 px-8 md:py-6 md:px-8">
         <div>

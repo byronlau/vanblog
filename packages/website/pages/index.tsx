@@ -21,7 +21,7 @@ const Home = (props: IndexPageProps) => {
     <Layout
       option={props.layoutProps}
       title={props.layoutProps.siteName}
-      sideBar={<AuthorCard option={props.authorCardProps}></AuthorCard>}
+      sideBar={props.layoutProps.showAuthorSidebar ? <AuthorCard option={props.authorCardProps} /> : null}
     >
       <Head>
         <meta
@@ -53,6 +53,7 @@ const Home = (props: IndexPageProps) => {
             type={"overview"}
             enableComment={props.layoutProps.enableComment}
             copyrightAggreement={props.layoutProps.copyrightAggreement}
+            tags={article.tags}
           ></PostCard>
         ))}
       </div>
